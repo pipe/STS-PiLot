@@ -17,10 +17,10 @@ cv_hflip = False # Flip OpenCV camera image horizontally
 cv_vflip = False # Flip OpenCV camera image vertically
 
 # Global values
-camera_detected = True
-camera_active = True
+camera_detected = False
+camera_active = False
 camera = None
-video_status = True
+video_status = False
 video_fps = 0
 brakes = False
 chocks = False

@@ -115,6 +115,10 @@ def index():
             cfg.video_status = cfg.camera_detected
     return app.send_static_file('index.html')
 
+@app.route('/pipe-manifest.json')
+def manifest():
+    return app.send_static_file('pipe-manifest.json')
+
 def gen(camera):
     """Video streaming generator function."""
     if cfg.video_status:
@@ -212,7 +216,8 @@ if __name__ == '__main__':
     hw.light_green_blink(0.1)
     time.sleep(1)
     hw.light_green_off()
-    cfg.camera_detected, cfg.camera = cam.init_camera()
+    if cfg.camera_detected:
+        cfg.camera_detected, cfg.camera = cam.init_camera()
     
     # register signal handler for a clean exit    
     signal.signal(signal.SIGINT, signal_handler)
@@ -226,5 +231,5 @@ if __name__ == '__main__':
     wd.start()
     
     #app.run(host='0.0.0.0', debug=False, threaded=True)
-    http_server = WSGIServer(('', 5000), app)
+    http_server = WSGIServer(('127.0.0.1', 8181), app)
     http_server.serve_forever()

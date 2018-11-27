@@ -1,0 +1,15 @@
+Additional files to make the STSdroid work.
+
+Rough notes....:
+
+1) install the pipe webcam demo
+2) install STS-pilot (see ..)
+3) copy these files into /home/pi
+4) add the pipe jar - and edit startPipe.sh to use it
+5) add startPipe.sh to rc.local
+su - pi -c "/home/pi/startPipe.sh"
+6) enable boot to cli
+
+
+
+
