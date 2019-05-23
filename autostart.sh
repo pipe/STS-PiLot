@@ -2,7 +2,7 @@
 # Autodetect username
 USER=$(stat -c '%U' $0)
 # Uncomment following line to manually configure username
-#USER="yourname"
+USER="root"
 # Absolute path to this script.
 SCRIPT=$(readlink -f $0)
 # Absolute path this script is in.
