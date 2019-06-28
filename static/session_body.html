@@ -111,88 +111,11 @@ body {
             but.unselectable = "on";
             }
 
-            function drawSegments() {
-                var text = "<pre>";
-                var winningCode = "";
-                for (var i = 0; i < SEGS; i++) {
-                    var se = localStorage.getItem("QRsegment" + i);
-                    text += i + "\t";
-                    if (se) {
-                        text += se;
-                        winningCode += se;
-                    }
-                    text += "\r\n";
-                }
-                text += "</pre>";
-                if (winningCode.length == ((SEGLEN * SEGS))) {
-                    text += '<a href="win.html?droid=' + droidId + '#' + winningCode + '"> Click to win </a>'
-                }
-                document.getElementById('qlist').innerHTML = text;
-            }
 
-            function setSeg(n, s) {
-                localStorage.setItem("QRsegment" + n, s);
-                drawSegments();
-            }
-
-            function addCode(c) {
-                var bits = c.split(":");
-                if ((bits.length == 2) && (bits[0].length == 1) && (bits[1].length == SEGLEN )) {
-                    var n = Number(bits[0]);
-                    if (n < SEGS) {
-                        setSeg(n, bits[1]);
-                    }
-                } else {
-                    console.log("bad format for QR");
-                }
-            }
-
-            function startQrDecode() {
-                var video = document.getElementById('ownervideo');
-                var photo = document.getElementById('qr-canvas');
-                var context = photo.getContext('2d');
-                // set our canvas to the same size as our video
-
-                qrcode.callback = function (code) {
-                    console.log("got qrcode of " + code);
-                    document.getElementById('qtext').innerText = "QR: "+code;
-                    addCode(code);
-                };
-                var tick = setInterval(function () {
-                    if ((video.videoWidth > 0) && (video.videoHeight > 0)) {
-                        photo.width = video.videoWidth ;
-                        photo.height = video.videoHeight;
-                        console.log("set photo to " + photo.width + " x " + photo.height);
-                        context.drawImage(video, 0, 0, photo.width, photo.height);
-                        document.getElementById('qtext').innerText = "Searching for QR";
-                        try {
-                            qrcode.decode();
-                        }
-                        catch (err) {
-                            document.getElementById('qtext').innerText = "QR: "+err;
-                        }
-                    }
-                }, 500);
-                drawSegments();
-		var CSS = document.documentElement.style;
-
-		/mobile/i.test(navigator.userAgent) && !pageYOffset && !location.hash && setTimeout(function () 			{
-			  CSS.height = '200%';
-			  CSS.overflow = 'visible';
-
-			  window.scrollTo(0, 1);
-
-			 CSS.height = window.innerHeight + 'px';
-                          CSS.overflow = 'hidden';
-                }, 1000);
-            }
-            function fullscreen(){
-          	document.getElementById('buttons').requestFullscreen();
-            }
 </script>
 <div id="buttons" ontouchend="sendJoy(0,0);"> 
-  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='PipeAV.videoHere("ownervideo",deviceduct,videorelay);addControl();startQrDecode();'/>
-  <video id="ownervideo" playsinline="true" autoplay="autoplay" style="width:100%;position:relative;z-index:0;" onclick='this.play();fullscreen();'></video>
+  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='PipeAV.videoHere("ownervideo",deviceduct);addControl();startQrDecode();'/>
+  <video id="ownervideo" playsinline="true" autoplay="autoplay" style="width:100%;position:relative;z-index:0;" onclick='this.play();'></video>
   <canvas id="qr-canvas" style="display:none;width:100%;height:100%;"></canvas>
 <div id="tap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:-1;color:blue;">TAP ME</div>
 <div id="qlist" style="position:absolute;top:0;left:0;z-index:1;color:green;"> </div>

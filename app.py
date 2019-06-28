@@ -7,11 +7,11 @@ import threading
 import time
 import json
 from flask import Flask, request, Response
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 
 import config as cfg
 
-import camera_pi as cam
+#import camera_pi as cam
 #import camera_cv as cam
 
 import io_wrapper as hw

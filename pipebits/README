@@ -3,12 +3,24 @@ Additional files to make the STSdroid work.
 Rough notes....:
 
 1) install the pipe webcam demo
-2) install STS-pilot (see ..)
-3) copy these files into /home/pi
-4) add the pipe jar - and edit startPipe.sh to use it
-5) add startPipe.sh to rc.local
+2) test it
+3) disable nginx 
+   systemctl stop nginx
+   systemctl disable nginx
+4) install rerequsites
+apt-get install python3 python3-smbus python3-pip
+pip3 install explorerhat
+pip3 install flask
+pip3 install gevent
+
+5) enable SPI and i2c enable boot to cli in raspi-config
+
+ln -s `pwd`/startPipe.sh ~
+
+6) add startPipe.sh to rc.local
 su - pi -c "/home/pi/startPipe.sh"
-6) enable boot to cli
+
+7) reboot 
 
 
 

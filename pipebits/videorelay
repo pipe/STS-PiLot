@@ -1,9 +1,0 @@
-#!/bin/sh
-killall gst-launch-1.0
-sleep 2
-echo "sending to " ${1}
-exec gst-launch-1.0 \
- rpicamsrc preview=false intra-refresh-type=both keyframe-interval=30 rotation=180 annotation-mode=0x00000209 annotation-text=pi.pe annotation-text-colour=0x808000  annotation-text-size=14  bitrate=256000 ! video/x-h264,width=568,height=320,framerate=15/1 ! h264parse !\
- rtph264pay config-interval=1 mtu=1290 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !\
- udpsink host=127.0.0.1 port=${1}
-
