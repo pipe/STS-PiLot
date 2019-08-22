@@ -21,9 +21,6 @@ body {
             var controlChannel;
             var lx = 0;
             var ly = 0;
-            var SEGLEN = 12;
-            var SEGS = 8;
-           
             function sendHeartbeat() {
                 if ((controlChannel) && (controlChannel.readyState == "open")) {
                     var req = "heartbeat";
@@ -39,8 +36,35 @@ body {
                 sendJoy(x, y);
             }
             function omu(event) {
-                console.log("omu =" + event);
-                sendJoy(0, 0);
+		var x=0;
+		var y=0;
+                switch (event.keyCode){
+                    case 38: // up
+                    case 66:
+                        y=0;
+			x = lx;
+                        break;
+                    case 40:
+                    case 70:
+                        // down
+                        y=0;
+			x=lx;
+                        break;
+                    case 37:
+                    case 76:
+                        x=0;
+			y=ly;
+                        //left
+                        break;
+                    case 39:
+                    case 82:
+                        x=0;
+			y=ly;
+                        // right
+                        break;
+                }
+		console.log("omu =" + event);
+                sendJoy(x,y);
             }
             function sendJoy(x, y) {
                 if ((controlChannel) && (controlChannel.readyState == "open")) {
@@ -54,31 +78,36 @@ body {
                    }
                 }
             }
-
+var speed = 40;
+var turn = 40;
             function onkeydown(ev){
                 var x =0;
                 var y =0;
-                switch  (ev.keyCode) {
+                switch  (ev.keyCode){
                     case 38: // up
                     case 66:
-                        y=100;
+                        y=speed;
+			x = lx;
                         break;
                     case 40:
                     case 70:
                         // down
-                        y=-100;
+                        y=-1*speed;
+			x=lx;
                         break;
                     case 37:
                     case 76:
-                        x=+100;
+                        x=turn;
+			y=ly;
                         //left
                         break;
                     case 39:
                     case 82:
-                        x=-100;
+                        x=-1*turn;
+			y=ly;
                         // right
                         break;
-                }
+                } 
                 sendJoy(x,y);
             }
 
@@ -96,119 +125,23 @@ body {
                 document.addEventListener('keydown',onkeydown);
                 document.addEventListener('keyup',omu);
 	        var video = document.getElementById('ownervideo');
-		video.onmousedown = omd;
-		video.onmouseup = omu;
-                $('#pipeloading').hide(); 
-            var but = document.getElementById('buttons');
-            but.oncontextmenu = function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
-            };
-            but.onselectstart = function() {
-                return false;
-            };
-            but.unselectable = "on";
             }
+function pv(lab){
+	PipeAV.dclabel = lab;
+	PipeAV.videoHere("ownervideo",deviceduct);
+	addControl();
+	$('#buttons').hide(); 
+}
 
-            function drawSegments() {
-                var text = "<pre>";
-                var winningCode = "";
-                for (var i = 0; i < SEGS; i++) {
-                    var se = localStorage.getItem("QRsegment" + i);
-                    text += i + "\t";
-                    if (se) {
-                        text += se;
-                        winningCode += se;
-                    }
-                    text += "\r\n";
-                }
-                text += "</pre>";
-                if (winningCode.length == ((SEGLEN * SEGS))) {
-                    text += '<a href="win.html?droid=' + droidId + '#' + winningCode + '"> Click to win </a>'
-                }
-                document.getElementById('qlist').innerHTML = text;
-            }
 
-            function setSeg(n, s) {
-                localStorage.setItem("QRsegment" + n, s);
-                drawSegments();
-            }
-
-            function addCode(c) {
-                var bits = c.split(":");
-                if ((bits.length == 2) && (bits[0].length == 1) && (bits[1].length == SEGLEN )) {
-                    var n = Number(bits[0]);
-                    if (n < SEGS) {
-                        setSeg(n, bits[1]);
-                    }
-                } else {
-                    console.log("bad format for QR");
-                }
-            }
-
-            function startQrDecode() {
-                var video = document.getElementById('ownervideo');
-                var photo = document.getElementById('qr-canvas');
-                var context = photo.getContext('2d');
-                // set our canvas to the same size as our video
-
-                qrcode.callback = function (code) {
-                    console.log("got qrcode of " + code);
-                    document.getElementById('qtext').innerText = "QR: "+code;
-                    addCode(code);
-                };
-                var tick = setInterval(function () {
-                    if ((video.videoWidth > 0) && (video.videoHeight > 0)) {
-                        photo.width = video.videoWidth ;
-                        photo.height = video.videoHeight;
-                        console.log("set photo to " + photo.width + " x " + photo.height);
-                        context.drawImage(video, 0, 0, photo.width, photo.height);
-                        document.getElementById('qtext').innerText = "Searching for QR";
-                        try {
-                            qrcode.decode();
-                        }
-                        catch (err) {
-                            document.getElementById('qtext').innerText = "QR: "+err;
-                        }
-                    }
-                }, 500);
-                drawSegments();
-		var CSS = document.documentElement.style;
-
-		/mobile/i.test(navigator.userAgent) && !pageYOffset && !location.hash && setTimeout(function () 			{
-			  CSS.height = '200%';
-			  CSS.overflow = 'visible';
-
-			  window.scrollTo(0, 1);
-
-			 CSS.height = window.innerHeight + 'px';
-                          CSS.overflow = 'hidden';
-                }, 1000);
-            }
-            function fullscreen(){
-          	document.getElementById('buttons').requestFullscreen();
-            }
 </script>
-<div id="buttons" ontouchend="sendJoy(0,0);"> 
-  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='PipeAV.videoHere("ownervideo",deviceduct);addControl();startQrDecode();'/>
-  <video id="ownervideo" playsinline="true" autoplay="autoplay" style="width:100%;position:relative;z-index:0;" onclick='this.play();fullscreen();'></video>
-  <canvas id="qr-canvas" style="display:none;width:100%;height:100%;"></canvas>
-<div id="tap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:-1;color:blue;">TAP ME</div>
-<div id="qlist" style="position:absolute;top:0;left:0;z-index:1;color:green;"> </div>
-<div id="qtext" style="position:absolute;bottom:12px;left:16px;z-index:1;color:red;"></div>
-<div style="color:green;position:absolute;top:10%;left:50%;transform:translate(-10%,-50%);z-index:2" ontouchstart="sendJoy(0,100);">
-<i class="fa fa-3x fa-arrow-up"></i>
+<div id="buttons"> 
+	<button type="button" class="btn btn-lg" onclick='pv("video-only");'>Drive</button>
+	<button type="button" class="btn btn-lg" onclick='pv("rvr");'>Learn</button>
+	<button type="button" class="btn btn-lg" onclick='pv("videodrive");'>Auto</button>
 </div>
-<div style="color:green;position:absolute;top:50%;left:10%;transform:translate(-50%,-10%);z-index:2" ontouchstart="sendJoy(100,0);">
-<i class="fa fa-3x fa-arrow-left"></i>
-</div>
-<div style="color:green;position:absolute;top:50%;right:10%;transform:translate(-50%,10%);z-index:2" ontouchstart="sendJoy(-100,0);">
-<i class="fa fa-3x fa-arrow-right"></i>
-</div>
-<div style="color:green;position:absolute;bottom:10%;left:50%;transform:translate(10%,-50%);z-index:2" ontouchstart="sendJoy(0,-100);">
-<i class="fa fa-3x fa-arrow-down"></i>
-</div>
+<div>
+  <video id="ownervideo" playsinline="true" autoplay="autoplay" onclick='this.play();'></video>
 </div>
 </body>
 </html>
