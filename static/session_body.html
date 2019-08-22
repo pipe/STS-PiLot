@@ -35,6 +35,29 @@ body {
                 var y = Math.round(+100 - ((200.0 * event.offsetY) / 480.0));
                 sendJoy(x, y);
             }
+var gamepad ;
+function getaxed(){
+        	
+	if(gamepad != null){
+		gp = navigator.getGamepads()[gamepad];
+		var gx = 10*Math.round(10.0 * gp.axes[2]);
+		var gy = 10*Math.round(10.0 * gp.axes[3]);
+		sendJoy(gx,gy);
+	    requestAnimationFrame(getaxed);
+	}
+}
+window.addEventListener("gamepadconnected", (event) => {
+	  console.log("A gamepad connected:");
+	    gamepad = event.gamepad.index;
+	    console.log(event.gamepad);
+	    getaxed();
+});
+
+window.addEventListener("gamepaddisconnected", (event) => {
+	  console.log("A gamepad disconnected:");
+	    gamepad = null;
+	    console.log(event.gamepad);
+});
             function omu(event) {
 		var x=0;
 		var y=0;
