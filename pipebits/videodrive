@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /project2/github/pipe/google-coral-examples-camera-pipe/gstreamer/
+exec ./v158drive.sh $1
+
