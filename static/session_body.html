@@ -35,6 +35,16 @@ body {
                 var y = Math.round(+100 - ((200.0 * event.offsetY) / 480.0));
                 sendJoy(x, y);
             }
+            function ots(evt){
+	      evt.preventDefault();
+	      console.log("touchstart.");
+	      var touches = evt.changedTouches;
+	      for (var i = 0; i < touches.length; i++) {
+	    	console.log("touchstart:" + i + "...");
+		var fmd = {offsetX : touches[i].screenX, offsetY: touches[i].screenY}
+		omd(fmd);
+	      }
+	    }
 var gamepad ;
 function getaxed(){
         	
@@ -102,8 +112,8 @@ window.addEventListener("gamepaddisconnected", (event) => {
                    }
                 }
             }
-var speed = 70;
-var turn = 50;
+var speed = 60;
+var turn = 30;
             function onkeydown(ev){
                 var x =0;
                 var y =0;
@@ -149,6 +159,8 @@ var turn = 50;
                 document.addEventListener('keydown',onkeydown);
                 document.addEventListener('keyup',omu);
 	        var video = document.getElementById('ownervideo');
+	        video.addEventListener("touchstart", ots, false);
+	        video.addEventListener("touchend", omu, false);
             }
 function pv(lab){
 	PipeAV.dclabel = lab;
@@ -160,9 +172,9 @@ function pv(lab){
 
 </script>
 <div id="buttons"> 
-	<button type="button" class="btn btn-lg" onclick='pv("video-only");'>Drive</button>
-	<button type="button" class="btn btn-lg" onclick='pv("rvr");'>Learn</button>
-	<button type="button" class="btn btn-lg" onclick='pv("videodrive");'>Auto</button>
+	<button type="button" class="btn-primary btn-lg" onclick='pv("video-only");'>Drive</button>
+	<button type="button" class="btn-danger btn-lg" onclick='pv("rvr");'>Learn</button>
+	<button type="button" class="btn-success btn-lg" onclick='pv("videodrive");'>Auto</button>
 </div>
 <div>
   <video id="ownervideo" playsinline="true" autoplay="autoplay" onclick='this.play();'></video>

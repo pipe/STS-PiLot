@@ -12,8 +12,8 @@ sleep 2
 chgrp i2c /sys/class/pwm/pwmchip1/pwm0/* && chmod -R g+w /sys/class/pwm/pwmchip1/pwm0/*
 chgrp i2c /sys/class/pwm/pwmchip0/pwm0/* && chmod -R g+w /sys/class/pwm/pwmchip0/pwm0/*
 #su -c "$GSCRIPTPATH/start.sh >/dev/null 2>&1 &" $USER 
-sleep 1
 su -c "$PSCRIPTPATH/start.sh >/dev/null 2>&1 &" $USER 
+sleep 10 
 exit 0
 
 
